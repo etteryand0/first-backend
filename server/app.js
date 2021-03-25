@@ -1,8 +1,17 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const mongoose = require('mongoose');
 
 const productRoutes = require('./api/routes/products');
+
+mongoose.connect("mongodb+srv://" +
+  process.env.MONGO_ATLAS_USERNAME +":" + process.env.MONGO_ATLAS_PASSWORD +
+  "@users.cy0ou.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
@@ -16,7 +25,7 @@ app.use((req, res, next) => {
   );
 
   if (req.method == 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'POST, GET, DELETE');
+    res.header('Access-Control-Allow-Methods', 'POST, GET, DELETE, PATCH');
     return res.status(200).json({});
   }
 
