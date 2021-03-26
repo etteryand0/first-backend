@@ -6,10 +6,25 @@ const mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {
   Product.find()
-    .limit(10)
+    .limit(20)
+    .select("name price _id")
     .exec()
     .then(docs => {
-      res.status(200).json(docs);
+      const response = {
+        count: docs.length,
+        products: docs.map(doc => {
+          return {
+            _id: doc._id,
+            name: doc.name,
+            price: doc.price,
+            request: {
+              type: 'GET',
+              url: 'http://localhost:3000/products/' + doc._id
+            }
+          }
+        })
+      }
+      res.status(200).json(response);
     })
     .catch(err => {
       console.error(err);
