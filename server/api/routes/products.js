@@ -84,21 +84,35 @@ router.post('/', (req, res, next) => {
 router.patch('/:productId', (req, res, next) => {
   const id = req.params.productId;
   const updateOps = {};
-  for (const ops of req.body) {
-    updateOps[ops.propName] = ops.value;
+  if (req.body[0]) {
+    for (const ops of req.body) {
+      updateOps[ops.propName] = ops.value;
+    }
+    Product.findByIdAndUpdate({ _id: id }, { $set: updateOps })
+      .exec()
+      .then(result => {
+        res.status(200).json({
+          _id: result._id,
+          name: result.name,
+          price: result.price,
+          request: {
+            type: "GET",
+            request: "http://localhost:3000/products/" + result._id,
+          }
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          error: err
+        });
+      });
+  } else {
+    res.status(422).json({
+      error: "Please use this form [ { 'propName':'name', 'value':'newName' } ]",
+    })
   }
 
-  Product.findByIdAndUpdate({ _id: id }, { $set: updateOps })
-    .exec()
-    .then(result => {
-      res.status(200).json(result);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({
-        error: err
-      });
-    });
 })
 
 router.delete('/:productId', (req, res, next) => {
