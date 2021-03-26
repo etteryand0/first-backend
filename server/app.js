@@ -5,9 +5,7 @@ const mongoose = require('mongoose');
 
 const productRoutes = require('./api/routes/products');
 
-mongoose.connect("mongodb+srv://" +
-  process.env.MONGO_ATLAS_USERNAME +":" + process.env.MONGO_ATLAS_PASSWORD +
-  "@users.cy0ou.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+mongoose.connect(process.env.MONGODB_LINK,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
