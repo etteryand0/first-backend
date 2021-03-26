@@ -40,7 +40,12 @@ router.get('/:productId', (req, res, next) => {
     .exec()
     .then(doc => {
       if (doc) {
-        res.status(200).json(doc);
+        const response = {
+          _id: doc._id,
+          name: doc.name,
+          price: doc.price,
+        }
+        res.status(200).json(response);
       } else {
         res.status(404).json({
           message: 'No products with such Id',
